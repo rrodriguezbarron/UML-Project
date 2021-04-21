@@ -62,12 +62,10 @@ Philip,
 
 Thank you so much for the feedback. It is really helpful and it was very comprehensive so we have a lot to do for the next step of the process. I just wanted to go over some of the points with you: 
 
-\begin{itemize}
- \item **Descriptive, not causal, argument**: You are right, we used the term "effect" wrongly in our presentation. In fact, we are not going to say what causes affect to change. Instead, we will focus mostly on the underlying patterns and relationships between affect and media consumption.
- \item **Data**: We are not using the ANES time series data. We are only using the 2016 ANES version of the survey. So we do not need to worry about time at all. 
- \item **Methods**: We were thinking in broad terms because there's so much we can do with the data. Following your advice we will review and retain only the ones we need. Personally, I have never even heard about some of the methods before the class started so I'm still unsure about how each would help. I hope you don't mind if this part changes as we get to know and use more methods in class. 
-\item **Polarization**: We are not measuring polarization. In fact we are only measuring affect for groups and individuals. This is very well captured by the feeling thermometers. Thus we do not need to construct any measure of polarization. We do expect to find patterns with regards to party identification but that is not going to be the goal. Rather the goal will be to see what patterns emerge between affect (measured in feeling thermometers) and selection of media consumption. 
-\end{itemize}
+- **Descriptive, not causal, argument**: You are right, we used the term "effect" wrongly in our presentation. In fact, we are not going to say what causes affect to change. Instead, we will focus mostly on the underlying patterns and relationships between affect and media consumption.
+- **Data**: We are not using the ANES time series data. We are only using the 2016 ANES version of the survey. So we do not need to worry about time at all. 
+- **Methods**: We were thinking in broad terms because there's so much we can do with the data. Following your advice we will review and retain only the ones we need. Personally, I have never even heard about some of the methods before the class started so I'm still unsure about how each would help. I hope you don't mind if this part changes as we get to know and use more methods in class. 
+- **Polarization**: We are not measuring polarization. In fact we are only measuring affect for groups and individuals. This is very well captured by the feeling thermometers. Thus we do not need to construct any measure of polarization. We do expect to find patterns with regards to party identification but that is not going to be the goal. Rather the goal will be to see what patterns emerge between affect (measured in feeling thermometers) and selection of media consumption. 
 
 Let me know if you think something could be further improved upon. Thanks again and see you next week.  
 
