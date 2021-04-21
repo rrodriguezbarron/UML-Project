@@ -51,3 +51,27 @@ You are proposing to use a ton of algorithms. This isn't necessarily a "bad" thi
 You are using the time series version of the ANES. This is fine, but **how exactly are you going to handle time?** The algorithms you have mentioned don't explicitly model time or handle it traditional/explicit ways (e.g., econometric like error correction models or transfer functions, or on the ML side, LSTM/RNN, etc.). So think really carefully about time, as it may skew the patterns you find, and give a hint of structure in the data space, where perhaps none or *different* structure truly exists. I just took up this idea in a recent paper I published. Take a look here if you're interested: https://ieeexplore.ieee.org/abstract/document/9355031. Alternative to dealing with time, you might consider using a different ANES data set, like the 2019 ANES pilot study or the 2016 version. Check out the ANES website for more options: https://electionstudies.org/data-center/ 
 
 Ultimately, after reading, I am not seeing a ton of methods or process that help you with your stated goal at the outset (media consumption and affect). There are certainly routes you could take, but as is written, the link between these concepts on the basis of the methods you propose is unclear. Overall, great start! Keep at it, and let me know if you'd like to discuss any point in greater detail. Of course, happy to do so if needed.
+
+# Ruben's Email
+
+Ruben Rodriguez <rrodriguezbarron@uchicago.edu>	Wed, Apr 21, 2021 at 1:00 PM
+To: Philip Waggoner <pdwaggoner@uchicago.edu>
+Cc: Ruben Heuer <heuer@uchicago.edu>, Spencer Ferguson-Dryden <csfergusondryden@uchicago.edu>, Tiancheng Pu <gabrielpu@uchicago.edu>
+
+Philip,
+
+Thank you so much for the feedback. It is really helpful and it was very comprehensive so we have a lot to do for the next step of the process. I just wanted to go over some of the points with you: 
+\begin{itemize
+ \item **Descriptive, not causal, argument**: You are right, we used the term "effect" wrongly in our presentation. In fact, we are not going to say what causes affect to change. Instead, we will focus mostly on the underlying patterns and relationships between affect and media consumption.
+ \item **Data**: We are not using the ANES time series data. We are only using the 2016 ANES version of the survey. So we do not need to worry about time at all. 
+ \item **Methods**: We were thinking in broad terms because there's so much we can do with the data. Following your advice we will review and retain only the ones we need. Personally, I have never even heard about some of the methods before the class started so I'm still unsure about how each would help. I hope you don't mind if this part changes as we get to know and use more methods in class. 
+\item **Polarization**: We are not measuring polarization. In fact we are only measuring affect for groups and individuals. This is very well captured by the feeling thermometers. Thus we do not need to construct any measure of polarization. We do expect to find patterns with regards to party identification but that is not going to be the goal. Rather the goal will be to see what patterns emerge between affect (measured in feeling thermometers) and selection of media consumption. 
+
+Let me know if you think something could be further improved upon. Thanks again and see you next week.  
+
+PS
+I'm CCing my team for their archive.
+
+Sincerely,
+- Rubén Rodríguez Barrón (The stress goes on the last syllable, like so: “ru-BEN”)
+Political Science PhD Student | The University of Chicago
