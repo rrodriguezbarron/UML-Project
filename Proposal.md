@@ -1,4 +1,6 @@
-# Introduction
+# Proposal
+
+## Introduction
 
 Berry and Sobieraj (2016) say that, over the past thirty years, outrage has become the main strategy for capturing and maintaining the attention of consumers across the media landscape. The consequence of this emotion-driven strategy has been an increase in the affective polarization of the electorate. Where people once targeted the politics of a candidate from the other party they now attack their personal character. Entertainment also makes extensive use of outrage to convey political messages, albeit presenting it in a more subtle manner. 
 
@@ -6,19 +8,19 @@ In this assignment, we will examine the relationship between consumption of diff
 
 Rosenfeld (2018) traces the development of polarization in our current, partisan environment to a deliberate decision by Democratic and Republican activists to differentiate their parties based on ideology. The influence of ideology in the affective evaluations of political candidates is widely documented. Ideology and skin tone, for example, have been used as heuristics for candidate evaluations by some democratic voters (Lerman et al 2015). Ideology has also been shown to alter the way in which respondents evaluate their personal agreement with candidate issue positions (Wyer et al 1991).
 
-# Data
+## Data
 
 Data used for this model will come from the 2016 American National Election Studies (ANES) Time Series Study (2017). The original ANES universe includes responses from 4,270 participants (2,231 females). Participants were predominantly white (n=3,038), had a mean age of 45 to 49 years old, and were highly educated: BA or higher (n=2,236), some college (n=898), high school or less (n=1,097). Ideologically, all three leanings were presented: liberal(n=1,346), moderate (n=993), conservative (n=1,862), and DK/Refuse (n=69). A range of party identification was also represented: Democrats (n=1,450), Republicans (n=1,231), Independent (n=1,367), other parties (n=148), and DK/Refuse (n=74).
 
 We will measure affect with the use of feeling thermometers. Feeling thermometers are great for evaluating affect for a subject and have been shown to be more reliable and valid than seven-point scales (Alwin, 1997). These correspond to ANES items V162078 to V162113. Consumption of media is measures by the respondents' selection of programs from across the media spectrum: newspaper, radio, television, and websites. Each question asks whether the respondent received any information about the presidential race whilst consuming these programs.The list of programs corresponds to the ANES items V161364 to V161460.  
 
-# Methods
+## Methods
 
 A main aspect of our analysis will be to find theoretically informative partitions of the dataspace via unsupervised machine learning techniques. To this end, we will deploy various dimension reduction strategies as well as association rule mining. Media consumption patterns are likely to map onto affect towards political candidates in less than obvious ways. We will therefore go through the data iteratively refining our comprehension through a combination of visual and numerical assessments of the variously reduced dataspace. 
 
 We will use principal component analysis to collect and visualize the linear combinations accounting for most of the variance across both media consumption and feeling thermometers. We will then supplement our analysis with a yet unspecified dimension reduction technique better suited to find complex or non-linear relationships (e.g. UMAP) (McInnes & Healy, 2018). We will further make use of clustering algorithms in the reduced feature space to help us understand natural groupings. Ideally, clusters found in media consumption should correspond to those in the feeling thermometer partition of the ANES data supported by the theoretical plausibility of their association. In a last step, we will perform association rule mining using the APRIORI algorithm to find "interesting" subsets of association rules connecting affect to media consumption, where interestingness is informed by the results of our foregoing analysis ( Agrawal & Srikant, 1994). Association rules extracted in this way may serve as useful heuristics in predicting affect from non-obvious patterns of media consumption.
 
-# References
+## References
 
  Agrawal, R., & Srikant, R. Fast algorithms for mining association rules. Proceedings of the 20th VLDB Conference Santiago, Chile, 1994.
 
@@ -72,6 +74,36 @@ Let me know if you think something could be further improved upon. Thanks again 
 PS
 I'm CCing my team for their archive.
 
-Sincerely,
-- Rubén Rodríguez Barrón (The stress goes on the last syllable, like so: “ru-BEN”)
-Political Science PhD Student | The University of Chicago
+Sincerely,  
+- Rubén Rodríguez Barrón (The stress goes on the last syllable, like so: “ru-BEN”)  
+Political Science PhD Student | The University of Chicago  
+
+# Philip's Response
+
+Philip Waggoner <pdwaggoner@uchicago.edu> Wed, Apr 21, 2021 at 2:50 PM
+To: Ruben Rodriguez Barron <rrodriguezbarron@uchicago.edu>
+Cc: Ruben Heuer <heuer@uchicago.edu>, Spencer Ferguson-Dryden <csfergusondryden@uchicago.edu>, Tiancheng Pu
+<gabrielpu@uchicago.edu>
+Hi Ruben et al. -
+
+Thanks for the reply. A few of my own where appropriate:
+
+- Re: data. Great! Glad time is not an issue. I would change this first sentence in your data section then and make sure you're all on the same page: "Data used for this model will come from the 2016 American National Election Studies (ANES) Time Series Study (2017)."
+
+- Absolutely, it is appropriate for your methods to change, adjust, and refine as your idea materializes and you get into the data. This is a normal part of any research project. Just try not to change substantive ideas too much, or this could create more work and other issues downstream. 
+
+- Glad also you aren't measuring polarization. It's way too fraught with measurement and construct issues. In this case, I would try at all costs to omit the word from your project and avoid it. You might suggest hints of it if you find really clear separation between the parties in the space. But be very clear, if you do, that you aren't formally testing for or exploring polarization, if in fact you stick to this research proposal you've submitted.
+
+Everything else sounds good! Onward. 
+
+By the by, next week is asynchronous. All will be up on Canvas explaining steps, assignments, etc. 
+
+And don't forget about the challenge being posted tomorrow morning. 
+
+All best,
+pw
+
+--
+
+Philip Waggoner
+https://pdwaggoner.github.io 
