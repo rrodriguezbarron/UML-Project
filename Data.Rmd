@@ -1,0 +1,46 @@
+---
+title: "Data"
+author: "Rubén A. Rodríguez Barrón"
+date: "4/26/2021"
+output: pdf_document
+---
+
+```{r}
+knitr::opts_chunk$set(echo = TRUE, error = FALSE, message = FALSE, warning = FALSE)
+library(tidyverse)
+library(readstata13)
+```
+
+# Data
+
+This is the file where we will clean the data from **anes_timeseries_2016_Stata13.dta**. The raw data can be accessed [here](https://electionstudies.org/data-center/2016-time-series-study/).
+
+The data frame *clean.rds* should be used in all working files of the project. 
+
+```{r}
+raw <- read.dta13("anes_timeseries_2016_Stata13.dta")
+```
+
+```{r}
+clean <- raw %>% 
+  #Please add your lines in ANES order
+  select(ideology = V161126,
+         party = V161158x,
+         race = V161310x,
+         gender = V161342,
+         all_things_considered	=	V161431,
+         marketplace	=	V161432,
+         the_glenn_beck_program	=	V161433,
+         the_mark_levin_show	=	V161434,
+         the_savage_nation	=	V161435,
+         fresh_air	=	V161436,
+         the_hugh_hewitt_show	=	V161437,
+         the_thom_hartmann_program	=	V161438,
+         joe_madison	=	V161439,
+         the_mike_gallagher_show	=	V161440,
+         the_bill_handel_show	=	V161441,
+         the_schnitt_show	=	V161442,
+         none_of_the_above	=	V161443
+         )
+```
+
