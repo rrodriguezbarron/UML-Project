@@ -54,5 +54,7 @@ clean <- raw %>%
          ft_john_roberts	=	V162093,
          ft_pope_francis	=	V162094
          )
+# Save a single object to a file
+saveRDS(clean, "clean.rds")
 ```
 
