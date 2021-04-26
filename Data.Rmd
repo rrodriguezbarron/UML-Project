@@ -24,7 +24,11 @@ raw <- read.dta13("anes_timeseries_2016_Stata13.dta")
 ```{r}
 clean <- raw %>% 
   #Please add your lines in ANES order
-  select(ideology = V161126,
+  select(ft_obama	=	V161092,
+         ft_bill_clinton	=	V161093,
+         ft_democratic_party	=	V161095,
+         ft_republican_party	=	V161096,
+         ideology = V161126,
          party = V161158x,
          race = V161310x,
          gender = V161342,
@@ -40,7 +44,15 @@ clean <- raw %>%
          the_mike_gallagher_show	=	V161440,
          the_bill_handel_show	=	V161441,
          the_schnitt_show	=	V161442,
-         none_of_the_above	=	V161443
+         no_radio	=	V161443,
+         ft_clinton	=	V162078,
+         ft_trump	=	V162079,
+         ft_johnson	=	V162080,
+         ft_stein	=	V162081,
+         ft_kaine	=	V162091,
+         ft_pence	=	V162092,
+         ft_john_roberts	=	V162093,
+         ft_pope_francis	=	V162094
          )
 ```
 
