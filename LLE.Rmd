@@ -1,0 +1,29 @@
+---
+title: "LLE"
+author: "Rubén A. Rodríguez Barrón"
+date: "4/26/2021"
+output: pdf_document
+---
+```{r, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, error = FALSE)
+```
+
+First, we load up the libraries we will be using throughout this project. 
+```{r setup}
+set.seed(1234)
+library(tidyverse)
+library(psych)
+library(lle)
+library(parallel)
+library(ggrepel)
+library(skimr)
+library(tictoc)
+library(patchwork)
+library(corrr)
+library(ggpubr)
+```
+
+
+```{r}
+clean <- readRDS("clean.rds")
+```
