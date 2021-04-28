@@ -54,7 +54,7 @@ clean <- raw %>%
          ft_kaine	=	V162091,
          ft_pence	=	V162092,
          ft_john_roberts	=	V162093,
-         ft_pope_francis	=	V162094
+         ft_pope_francis	=	V162094,
          ft_christian_fundamentalists = V162095,
          ft_feminists = V162096,
          ft_liberals = V162097,
@@ -73,19 +73,40 @@ clean <- raw %>%
          ft_police= V162110,
          ft_transgender_people = V162111,
          ft_scientists = V162112,
-         ft_blm = V162113
-         )
-
+         ft_blm = V162113) %>% 
+  # Recoding ideology
+  mutate(ideology = dplyr::recode(ideology,
+                        `-9` = NA_real_,
+                        `-8` = NA_real_,
+                        `99` = NA_real_)) %>% 
+  # Recoding party
+  mutate(party = dplyr::recode(party,
+                        `-9` = NA_real_,
+                        `-8` = NA_real_)) %>% 
+  # Recoding race
+  mutate(race = dplyr::recode(race,
+                        `-9` = NA_real_)) %>% 
+  # Recoding gender
+  mutate(gender = dplyr::recode(gender,
+                        `-9` = NA_real_,
+                        `3`  = NA_real_)) %>% 
+  # Recoding tv
+  mutate_at(vars(contains("tv_")), funs(if_else(.<0,NA_real_,.))) %>% 
+  # Recoding radio
+  mutate_at(vars(contains("radio_")), funs(if_else(.<0,NA_real_,.))) %>% 
+  # Recoding web
+  mutate_at(vars(contains("web_")), funs(if_else(.<0,NA_real_,.)))
+  
+  
 ```
 
 ```{r}
-# Set factors for partyid
-# clean$partyid <- factor(clean$partyid, labels=c("Strong Democrat", "Democrat", "Lean Democrat", "Independent", "Lean Republican", "Republican", "Strong Republican"))
-
 # Set factors for ideology
-# clean$libcon <- factor(clean$libcon, labels=c("Extremely Liberal", "Liberal", "Slightly Liberal", "Moderate", "Slightly Conservative", "Conservative", "Extremely Conservative"))
-```
+clean$ideology <- factor(clean$ideology, labels=c("Extremely Liberal", "Liberal", "Slightly Liberal", "Moderate", "Slightly Conservative", "Conservative", "Extremely Conservative"))
 
+# Set factors for party
+clean$party <- factor(clean$party, labels=c("Strong Democrat", "Democrat", "Lean Democrat", "Independent", "Lean Republican", "Republican", "Strong Republican"))
+```
 
 ```{r}
 # Save a single object to a file
