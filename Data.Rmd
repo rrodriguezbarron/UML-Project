@@ -11,6 +11,7 @@ library(tidyverse)
 library(readstata13)
 library(skimr)
 library(psych)
+library(naniar) # use install.packages('naniar') in the console
 ```
 
 # Data
@@ -20,7 +21,7 @@ This is the file where we will clean the data from **anes_timeseries_2016_Stata1
 The data frame *clean.rds* should be used in all working files of the project. 
 
 ```{r}
-raw <- read.dta13("anes_timeseries_2016_Stata13.dta")
+raw <- read.dta13("anes_timeseries_2016_dta/anes_timeseries_2016_Stata13.dta")
 ```
 
 ```{r}
@@ -96,8 +97,15 @@ clean <- raw %>%
   mutate_at(vars(contains("radio_")), funs(if_else(.<0,NA_real_,.))) %>% 
   # Recoding web
   mutate_at(vars(contains("web_")), funs(if_else(.<0,NA_real_,.)))
-  
-  
+```
+
+```{r}
+# Replace all values for feeling thermometers less than 0 or greater than 100 with N/A
+replaced_ft <- subset(clean, select=c(ft_obama:ft_blm)) %>%
+  replace_with_na_all(condition = ~.x < 0 | .x > 100)
+
+# Merge na-replaced dataframe with the cleaned dataframe
+clean <- cbind(subset(clean, select=c(ideology:radio_no_radio)), replaced_ft)
 ```
 
 ```{r}
