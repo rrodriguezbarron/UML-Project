@@ -8,7 +8,6 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, error = FALSE)
 ```
 
-First, we load up the libraries we will be using throughout this project. 
 ```{r setup}
 set.seed(1234)
 library(tidyverse)
@@ -23,7 +22,43 @@ library(corrr)
 library(ggpubr)
 ```
 
+```{r}
+# Import clean
+clean <- readRDS("clean.rds")
+```
 
 ```{r}
-clean <- readRDS("clean.rds")
+# Select only the feeling thermometers
+onlyft <- dplyr::select(starts_with("ft_")) %>%
+  # Scale the variables
+  scale() %>% 
+  as_tibble()
+```
+
+```{r out.width = "50%"}
+# Optimal K for only the feeling thermometers
+cores <- detectCores() - 1
+  
+tic() 
+find_k <- calc_k(onlyft,
+                 m = 2, 
+                 parallel = TRUE,
+                 cpus = cores) 
+toc() # Approximately 
+```
+
+```{r}
+## Confirming via which.min()
+find_k[which.min(find_k$rho), ] 
+```
+
+```{r}
+# Saving optimal k as a variable
+optimal_k <- find_k[which.min(find_k$rho), ][[1]]
+```
+
+```{r}
+lle_fit <- lle(onlyft,
+               m = 2,
+               k = optimal_k)
 ```
