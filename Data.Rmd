@@ -52,7 +52,26 @@ clean <- raw %>%
          ft_kaine	=	V162091,
          ft_pence	=	V162092,
          ft_john_roberts	=	V162093,
-         ft_pope_francis	=	V162094
+         ft_pope_francis	=	V162094,
+         ft_christian_fundamentalists = V162095,
+         ft_feminists = V162096,
+         ft_liberals = V162097,
+         ft_labor_unions = V162098,
+         ft_poor_people = V162099,
+         ft_big_business = V162100,
+         ft_conservatives = V162101,
+         ft_supreme_court = V162102,
+         ft_gay_lesbian = V162103,
+         ft_congress = V162104,
+         ft_rich_people = V162105,
+         ft_muslims = V162106,
+         ft_christians = V162107,
+         ft_jews = V162108,
+         ft_tea_party = V162109,
+         ft_police= V162110,
+         ft_transgender_people = V162111,
+         ft_scientists = V162112,
+         ft_blm = V162113
          )
 # Save a single object to a file
 saveRDS(clean, "clean.rds")
