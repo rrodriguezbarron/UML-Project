@@ -95,9 +95,9 @@ clean <- raw %>%
   # Recoding radio
   mutate_at(vars(contains("radio_")), funs(if_else(.<0,NA_real_,.))) %>% 
   # Recoding web
-  mutate_at(vars(contains("web_")), funs(if_else(.<0,NA_real_,.)))
-  
-  
+  mutate_at(vars(contains("web_")), funs(if_else(.<0,NA_real_,.))) %>%
+  # Recoding thermometers
+  mutate_at(vars(contains("ft_")), funs(if_else(.<0 | .>100, NA_real_,.)))
 ```
 
 ```{r}
