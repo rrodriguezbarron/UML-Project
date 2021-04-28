@@ -26,11 +26,7 @@ raw <- read.dta13("anes_timeseries_2016_Stata13.dta")
 ```{r}
 clean <- raw %>% 
   #Please add your lines in ANES order
-  select(ft_obama	=	V161092,
-         ft_bill_clinton	=	V161093,
-         ft_democratic_party	=	V161095,
-         ft_republican_party	=	V161096,
-         ideology = V161126,
+  select(ideology = V161126,
          party = V161158x,
          race = V161310x,
          gender = V161342,
@@ -47,6 +43,10 @@ clean <- raw %>%
          radio_the_bill_handel_show	=	V161441,
          radio_the_schnitt_show	=	V161442,
          radio_no_radio	=	V161443,
+         ft_obama	=	V161092,
+         ft_bill_clinton	=	V161093,
+         ft_democratic_party	=	V161095,
+         ft_republican_party	=	V161096,
          ft_clinton	=	V162078,
          ft_trump	=	V162079,
          ft_johnson	=	V162080,
@@ -54,31 +54,7 @@ clean <- raw %>%
          ft_kaine	=	V162091,
          ft_pence	=	V162092,
          ft_john_roberts	=	V162093,
-<<<<<<< HEAD
          ft_pope_francis	=	V162094
-         ) %>% 
-  mutate(ideology = )
-
-```
-
-```{r}
-clean %>% 
-  count(ideology)
-```
-
-
-```{r}
-# Set factors for partyid
-# clean$partyid <- factor(clean$partyid, labels=c("Strong Democrat", "Democrat", "Lean Democrat", "Independent", "Lean Republican", "Republican", "Strong Republican"))
-
-# Set factors for ideology
-# clean$libcon <- factor(clean$libcon, labels=c("Extremely Liberal", "Liberal", "Slightly Liberal", "Moderate", "Slightly Conservative", "Conservative", "Extremely Conservative"))
-```
-
-
-```{r}
-=======
-         ft_pope_francis	=	V162094,
          ft_christian_fundamentalists = V162095,
          ft_feminists = V162096,
          ft_liberals = V162097,
@@ -99,7 +75,19 @@ clean %>%
          ft_scientists = V162112,
          ft_blm = V162113
          )
->>>>>>> bf4c40a635136ffe6cb3c9335656ec821d31a5bc
+
+```
+
+```{r}
+# Set factors for partyid
+# clean$partyid <- factor(clean$partyid, labels=c("Strong Democrat", "Democrat", "Lean Democrat", "Independent", "Lean Republican", "Republican", "Strong Republican"))
+
+# Set factors for ideology
+# clean$libcon <- factor(clean$libcon, labels=c("Extremely Liberal", "Liberal", "Slightly Liberal", "Moderate", "Slightly Conservative", "Conservative", "Extremely Conservative"))
+```
+
+
+```{r}
 # Save a single object to a file
 saveRDS(clean, "clean.rds")
 ```
