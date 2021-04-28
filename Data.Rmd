@@ -96,16 +96,9 @@ clean <- raw %>%
   # Recoding radio
   mutate_at(vars(contains("radio_")), funs(if_else(.<0,NA_real_,.))) %>% 
   # Recoding web
-  mutate_at(vars(contains("web_")), funs(if_else(.<0,NA_real_,.)))
-```
-
-```{r}
-# Replace all values for feeling thermometers less than 0 or greater than 100 with N/A
-replaced_ft <- subset(clean, select=c(ft_obama:ft_blm)) %>%
-  replace_with_na_all(condition = ~.x < 0 | .x > 100)
-
-# Merge na-replaced dataframe with the cleaned dataframe
-clean <- cbind(subset(clean, select=c(ideology:radio_no_radio)), replaced_ft)
+  mutate_at(vars(contains("web_")), funs(if_else(.<0,NA_real_,.))) %>%
+  # Recoding thermometers
+  mutate_at(vars(contains("ft_")), funs(if_else(.<0 | .>100, NA_real_,.)))
 ```
 
 ```{r}
