@@ -21,7 +21,7 @@ This is the file where we will clean the data from **anes_timeseries_2016_Stata1
 The data frame *clean.rds* should be used in all working files of the project. 
 
 ```{r}
-raw <- read.dta13("anes_timeseries_2016_dta/anes_timeseries_2016_Stata13.dta")
+raw <- read.dta13("anes_timeseries_2016_Stata13.dta")
 ```
 
 ```{r}
