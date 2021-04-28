@@ -9,6 +9,8 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE, error = FALSE, message = FALSE, warning = FALSE)
 library(tidyverse)
 library(readstata13)
+library(skimr)
+library(psych)
 ```
 
 # Data
@@ -32,19 +34,19 @@ clean <- raw %>%
          party = V161158x,
          race = V161310x,
          gender = V161342,
-         all_things_considered	=	V161431,
-         marketplace	=	V161432,
-         the_glenn_beck_program	=	V161433,
-         the_mark_levin_show	=	V161434,
-         the_savage_nation	=	V161435,
-         fresh_air	=	V161436,
-         the_hugh_hewitt_show	=	V161437,
-         the_thom_hartmann_program	=	V161438,
-         joe_madison	=	V161439,
-         the_mike_gallagher_show	=	V161440,
-         the_bill_handel_show	=	V161441,
-         the_schnitt_show	=	V161442,
-         no_radio	=	V161443,
+         radio_all_things_considered	=	V161431,
+         radio_marketplace	=	V161432,
+         radio_the_glenn_beck_program	=	V161433,
+         radio_the_mark_levin_show	=	V161434,
+         radio_the_savage_nation	=	V161435,
+         radio_fresh_air	=	V161436,
+         radio_the_hugh_hewitt_show	=	V161437,
+         radio_the_thom_hartmann_program	=	V161438,
+         radio_joe_madison	=	V161439,
+         radio_the_mike_gallagher_show	=	V161440,
+         radio_the_bill_handel_show	=	V161441,
+         radio_the_schnitt_show	=	V161442,
+         radio_no_radio	=	V161443,
          ft_clinton	=	V162078,
          ft_trump	=	V162079,
          ft_johnson	=	V162080,
@@ -53,7 +55,27 @@ clean <- raw %>%
          ft_pence	=	V162092,
          ft_john_roberts	=	V162093,
          ft_pope_francis	=	V162094
-         )
+         ) %>% 
+  mutate(ideology = )
+
+```
+
+```{r}
+clean %>% 
+  count(ideology)
+```
+
+
+```{r}
+# Set factors for partyid
+# clean$partyid <- factor(clean$partyid, labels=c("Strong Democrat", "Democrat", "Lean Democrat", "Independent", "Lean Republican", "Republican", "Strong Republican"))
+
+# Set factors for ideology
+# clean$libcon <- factor(clean$libcon, labels=c("Extremely Liberal", "Liberal", "Slightly Liberal", "Moderate", "Slightly Conservative", "Conservative", "Extremely Conservative"))
+```
+
+
+```{r}
 # Save a single object to a file
 saveRDS(clean, "clean.rds")
 ```
