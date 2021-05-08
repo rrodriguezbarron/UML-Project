@@ -28,20 +28,40 @@ clean <- readRDS("clean.rds")
 ```
 
 ```{r}
-# Select only the feeling thermometers
-onlyft <- dplyr::select(starts_with("ft_")) %>%
-  # Scale the variables
-  scale() %>% 
+# Remove rows w/ missing values
+clean_no_missing <- na.omit(clean)
+
+# Select only non-FT, numeric columns
+only_ft <- clean_no_missing %>%
+  dplyr::select(starts_with(c("ft_"))) %>%
+  scale() %>%
   as_tibble()
+
+# Collapse Party/Ideology into broader groups
+clean_no_missing <- clean_no_missing %>% mutate(
+  ideology2 = fct_collapse(
+  ideology,
+  Liberal=c("Extremely Liberal", "Liberal", "Slightly Liberal"),
+  Conservative=c("Extremely Conservative", "Conservative", "Slightly Conservative"))) %>%
+  mutate(
+  party2=fct_collapse(
+  party,
+  Democrat=c("Strong Democrat", "Democrat", "Lean Democrat"),
+  Republican=c("Strong Republican", "Republican", "Lean Republican")))
+
+summary(only_ft)
 ```
 
-```{r out.width = "50%"}
+```{r}
 # Optimal K for only the feeling thermometers
 cores <- detectCores() - 1
+cores
   
 tic() 
-find_k <- calc_k(onlyft,
+find_k <- calc_k(only_ft,
                  m = 2, 
+                 kmin=1,
+                 kmax=200, # not sure what an appropriate upper bound is for 4k+ obs
                  parallel = TRUE,
                  cpus = cores) 
 toc() # Approximately 
@@ -54,11 +74,26 @@ find_k[which.min(find_k$rho), ]
 
 ```{r}
 # Saving optimal k as a variable
-optimal_k <- find_k[which.min(find_k$rho), ][[1]]
+opt_k <- find_k[which.min(find_k$rho), ][[1]]
 ```
 
 ```{r}
-lle_fit <- lle(onlyft,
+lle_fit <- lle(only_ft,
                m = 2,
-               k = optimal_k)
+               k = opt_k)
 ```
+
+```{r}
+clean_no_missing %>%
+  ggplot(aes(x = lle_fit$Y[,1], 
+             y = lle_fit$Y[,2], 
+             col = as.factor(radio_no_radio) )) +
+  geom_point(alpha=0.6) +
+  stat_ellipse() +
+  labs(x = "First Dimension",
+       y = "Second Dimension",
+       title = "LLE k = 96",
+       col="radio_no_radio") + 
+  theme_minimal()
+```
+
