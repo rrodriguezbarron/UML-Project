@@ -1,0 +1,135 @@
+---
+title: "Autoencoder"
+author: "Spencer Ferguson-Dryden"
+date: "5/9/2021"
+output: pdf_document
+---
+```{r, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, error = FALSE)
+```
+
+```{r echo = TRUE, eval = TRUE, include = FALSE}
+# Load libraries
+library(tidyverse)
+library(here)
+library(amerika)
+library(tictoc)
+library(h2o) # ML engine for fitting the AE
+library(bit64) # speeds up some h2o computation
+```
+
+Cleaning/Recoding
+
+```{r}
+clean <- readRDS("clean.rds")
+
+# Remove rows w/ missing values
+clean_no_missing <- na.omit(clean)
+
+# Collapse Party/Ideology into broader groups
+clean_no_missing <- clean_no_missing %>% mutate(
+  ideology2 = fct_collapse(
+  ideology,
+  Liberal=c("Extremely Liberal", "Liberal", "Slightly Liberal"),
+  Conservative=c("Extremely Conservative", "Conservative", "Slightly Conservative"))) %>%
+  mutate(
+  party2=fct_collapse(
+  party,
+  Democrat=c("Strong Democrat", "Democrat", "Lean Democrat"),
+  Republican=c("Strong Republican", "Republican", "Lean Republican")))
+```
+
+Constructing the Autoencoder
+
+```{r results='hide', message=FALSE}
+# fitting
+set.seed(1234)
+
+# initializing the h2o cluster; have to do this to work with the h2o engine
+my_h2o <- h2o.init()
+
+# h2o df
+anes_h2o <- clean_no_missing %>% as.h2o()
+
+# train, val, test
+split_frame <- h2o.splitFrame(anes_h2o, 
+                              ratios = c(0.8, 0.1), 
+                              seed = 1234)   
+
+split_frame %>% 
+  str()
+
+train <- split_frame[[1]]
+validation <- split_frame[[2]]
+test <- split_frame[[3]]
+
+# Select response/predictor variables
+response <- clean_no_missing %>%
+  dplyr::select(starts_with(c("radio_"))) %>% names()
+response <- append(response, 
+                   c('ideology', 'party', 'race', 'gender', 'ideology2', 'party2')
+                   )
+predictors <- setdiff(colnames(train), response)
+```
+
+
+```{r results='hide'}
+# Run the AE algorithm with 1 layer and 2 nodes
+tic()
+autoencoder <- h2o.deeplearning(x = predictors,
+                                training_frame = train,
+                                autoencoder = TRUE,  
+                                hidden = c(8, 8, 2),
+                                epochs = 1000, 
+                                activation = "Tanh")
+toc()
+```
+
+For reference, get the index and colnames of the training dataset
+```{r}
+names(train)
+```
+
+```{r}
+# Extract and store the two features
+codings_train <- h2o.deepfeatures(autoencoder, 
+                                  data = train, 
+                                  layer = 3) %>%
+  as.data.frame() %>%
+  mutate(r = as.vector(train[ , 17])) %>%
+  mutate(ideology = as.vector(train[ , 49]))
+```
+
+```{r}
+ggplot(codings_train, aes(x = DF.L3.C1, 
+                          y = DF.L3.C2, 
+                          color = factor(r),
+                          shape = factor(ideology))) +
+  geom_point(alpha = 0.8) + 
+  stat_ellipse(aes(group=factor(r))) +
+  labs(title = "Deep Features (Three Layers)",
+       color = "radio_no_radio",
+       shape = "Ideology") + 
+  theme_minimal()
+```
+
+
+```{r}
+# viz relative importance
+fimp <- as.data.frame(h2o.varimp(autoencoder)) %>% 
+  arrange(desc(relative_importance))
+
+fimp %>% 
+  ggplot(aes(x = relative_importance, 
+             y = reorder(variable, -relative_importance))) +
+  geom_point(color = "dark red", 
+             fill = "dark red", 
+             alpha = 0.5,
+             size = 2) +
+  labs(title = "Relative Feature Importance",
+       subtitle = "Deep Autoencoder",
+       x = "Relative Importance",
+       y = "Feature") + 
+  theme_minimal()
+```
+
