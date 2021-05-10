@@ -21,53 +21,63 @@ library(bit64) # speeds up some h2o computation
 Cleaning/Recoding
 
 ```{r}
-clean <- readRDS("clean.rds")
-
-# Remove rows w/ missing values
-clean_no_missing <- na.omit(clean)
+anes <- readRDS("clean.rds")
 
 # Collapse Party/Ideology into broader groups
-clean_no_missing <- clean_no_missing %>% mutate(
-  ideology2 = fct_collapse(
+anes <- anes %>% mutate(
+  ideology = fct_collapse(
   ideology,
   Liberal=c("Extremely Liberal", "Liberal", "Slightly Liberal"),
   Conservative=c("Extremely Conservative", "Conservative", "Slightly Conservative"))) %>%
   mutate(
-  party2=fct_collapse(
+  party=fct_collapse(
   party,
   Democrat=c("Strong Democrat", "Democrat", "Lean Democrat"),
   Republican=c("Strong Republican", "Republican", "Lean Republican")))
+
+# Isolate response/predictors by predictor type (otherwise too few items in dataset)
+radio <- anes %>%
+  dplyr::select(starts_with(c("radio_", "ft_", "party", "ideology", "race", "gender"))) %>%
+  na.omit()
+tv_news <- anes %>%
+  dplyr::select(starts_with(c("ft_", "party", "ideology", "race", "gender", "tv_all_in_with_chris_hayes", "tv_hannity", "tv_60_minutes", "tv_anderson_cooper", "tv_cbs", "tv_face_the_nation", "tv_nbc", "tv_the_rachel", "tv_pbs", "tv_the_o_reilly"))) %>%
+  na.omit()
+tv_series <- anes %>% 
+  dplyr::select(starts_with(c("ft_", "party", "ideology", "race", "gender", "tv_criminal", "tv_empire", "tv_modern_family", "tv_ncis", "tv_the_simpsons", "tv_house_of_cards", "tv_game_of_thrones", "tv_blue_bloods", "tv_hawaii", "tv_madam_sec", "tv_scandal", "tv_the_big_bang"))) %>%
+  na.omit()
+tv_game_talk_shows <- anes %>%
+  dplyr::select(starts_with(c("ft_", "party", "ideology", "race", "gender", "tv_good_morning", "tv_today", "tv_jimmy", "tv_dancing", "tv_judge", "tv_shark_tank", "tv_the_voice", "tv_the_late_show", "tv_the_tonight_show"))) %>%
+  na.omit()
+web <- anes %>%
+  dplyr::select(starts_with(c("web_", "ft_", "party", "ideology", "race", "gender"))) %>%
+  na.omit()
 ```
 
 Constructing the Autoencoder
 
 ```{r results='hide', message=FALSE}
-# fitting
-set.seed(1234)
 
-# initializing the h2o cluster; have to do this to work with the h2o engine
+set.seed(1234)
 my_h2o <- h2o.init()
 
-# h2o df
-anes_h2o <- clean_no_missing %>% as.h2o()
+# CHANGE VARIABLE NAME HERE
+anes_h2o <- tv_news %>% as.h2o() 
 
-# train, val, test
+
 split_frame <- h2o.splitFrame(anes_h2o, 
                               ratios = c(0.8, 0.1), 
                               seed = 1234)   
-
 split_frame %>% 
   str()
-
 train <- split_frame[[1]]
 validation <- split_frame[[2]]
 test <- split_frame[[3]]
 
 # Select response/predictor variables
-response <- clean_no_missing %>%
-  dplyr::select(starts_with(c("radio_"))) %>% names()
+response <- tv_news %>% # CHANGE VARIABLE HERE
+  dplyr::select(starts_with(c("tv_"))) %>% names() # CHANGE SELECTOR VALUE
 response <- append(response, 
-                   c('ideology', 'party', 'race', 'gender', 'ideology2', 'party2')
+                   c('ideology', 'party', 'race', 'gender')
                    )
 predictors <- setdiff(colnames(train), response)
 ```
@@ -91,24 +101,23 @@ names(train)
 ```
 
 ```{r}
-# Extract and store the two features
 codings_train <- h2o.deepfeatures(autoencoder, 
                                   data = train, 
                                   layer = 3) %>%
   as.data.frame() %>%
-  mutate(r = as.vector(train[ , 17])) %>%
-  mutate(ideology = as.vector(train[ , 49]))
-```
+  # CHANGE/ADD FEATURES HERE
+  mutate(response = as.vector(train[ , 45])) %>%
+  mutate(ideology = as.vector(train[ , 33]))
 
-```{r}
 ggplot(codings_train, aes(x = DF.L3.C1, 
                           y = DF.L3.C2, 
-                          color = factor(r),
+                          color = factor(response),
                           shape = factor(ideology))) +
   geom_point(alpha = 0.8) + 
-  stat_ellipse(aes(group=factor(r))) +
+  stat_ellipse(aes(group=factor(response))) +
+  # CHANGE LABELS AS NEEDED
   labs(title = "Deep Features (Three Layers)",
-       color = "radio_no_radio",
+       color = "O'Reilly Factor",
        shape = "Ideology") + 
   theme_minimal()
 ```

@@ -23,34 +23,44 @@ library(ggpubr)
 ```
 
 ```{r}
-# Import clean
 clean <- readRDS("clean.rds")
-```
-
-```{r}
-# Remove rows w/ missing values
-clean_no_missing <- na.omit(clean)
-
-# Select only non-FT, numeric columns
-only_ft <- clean_no_missing %>%
-  dplyr::select(starts_with(c("ft_"))) %>%
-  scale() %>%
-  as_tibble()
 
 # Collapse Party/Ideology into broader groups
-clean_no_missing <- clean_no_missing %>% mutate(
-  ideology2 = fct_collapse(
+anes <- clean %>% mutate(
+  ideology = fct_collapse(
   ideology,
   Liberal=c("Extremely Liberal", "Liberal", "Slightly Liberal"),
   Conservative=c("Extremely Conservative", "Conservative", "Slightly Conservative"))) %>%
   mutate(
-  party2=fct_collapse(
+  party=fct_collapse(
   party,
   Democrat=c("Strong Democrat", "Democrat", "Lean Democrat"),
   Republican=c("Strong Republican", "Republican", "Lean Republican")))
 
-summary(only_ft)
+# Isolate response/predictors by predictor type (otherwise too few items in dataset)
+radio <- anes %>%
+  dplyr::select(starts_with(c("radio_", "ft_", "party", "ideology", "race", "gender"))) %>%
+  na.omit()
+tv_news <- anes %>%
+  dplyr::select(starts_with(c("ft_", "party", "ideology", "race", "gender", "tv_all_in_with_chris_hayes", "tv_hannity", "tv_60_minutes", "tv_anderson_cooper", "tv_cbs", "tv_face_the_nation", "tv_nbc", "tv_the_rachel", "tv_pbs", "tv_the_o_reilly"))) %>%
+  na.omit()
+tv_series <- anes %>% 
+  dplyr::select(starts_with(c("ft_", "party", "ideology", "race", "gender", "tv_criminal", "tv_empire", "tv_modern_family", "tv_ncis", "tv_the_simpsons", "tv_house_of_cards", "tv_game_of_thrones", "tv_blue_bloods", "tv_hawaii", "tv_madam_sec", "tv_scandal", "tv_the_big_bang"))) %>%
+  na.omit()
+tv_game_talk_shows <- anes %>%
+  dplyr::select(starts_with(c("ft_", "party", "ideology", "race", "gender", "tv_good_morning", "tv_today", "tv_jimmy", "tv_dancing", "tv_judge", "tv_shark_tank", "tv_the_voice", "tv_the_late_show", "tv_the_tonight_show"))) %>%
+  na.omit()
+web <- anes %>%
+  dplyr::select(starts_with(c("web_", "ft_", "party", "ideology", "race", "gender"))) %>%
+  na.omit()
 ```
+
+```{r}
+only_ft <- tv_game_talk_shows %>% # CHANGE DATASET NAME HERE
+  dplyr::select(starts_with(c("ft_")))
+```
+
+K is about 96, so will just use that for all datasets since it take over 10 mins to run.
 
 ```{r}
 # Optimal K for only the feeling thermometers
@@ -58,42 +68,39 @@ cores <- detectCores() - 1
 cores
   
 tic() 
-find_k <- calc_k(only_ft,
+find_k <- calc_k(only_ft, # add the only_ft chunk from below somewhere before this code in case you'd like to recalculate the opt_k value
                  m = 2, 
                  kmin=1,
                  kmax=200, # not sure what an appropriate upper bound is for 4k+ obs
                  parallel = TRUE,
                  cpus = cores) 
-toc() # Approximately 
-```
+toc()
 
-```{r}
-## Confirming via which.min()
-find_k[which.min(find_k$rho), ] 
-```
-
-```{r}
-# Saving optimal k as a variable
 opt_k <- find_k[which.min(find_k$rho), ][[1]]
 ```
 
 ```{r}
 lle_fit <- lle(only_ft,
                m = 2,
-               k = opt_k)
+               k = 96) # Change k as appropriate
 ```
 
 ```{r}
-clean_no_missing %>%
+# UPDATE RESPONSE VARIABLE HERE
+response <- tv_game_talk_shows$tv_the_late_show_with_stephen_colbert
+
+tv_game_talk_shows %>%
   ggplot(aes(x = lle_fit$Y[,1], 
              y = lle_fit$Y[,2], 
-             col = as.factor(radio_no_radio) )) +
-  geom_point(alpha=0.6) +
-  stat_ellipse() +
+             col = as.factor(response),
+             shape = as.factor(ideology))) +
+  geom_point(alpha=0.75) +
+  stat_ellipse(aes(group=as.factor(response))) +
   labs(x = "First Dimension",
        y = "Second Dimension",
        title = "LLE k = 96",
-       col="radio_no_radio") + 
+       col="Stephen Colbert", # UPDATE RESPONSE LABEL HERE
+       shape="Ideology") + 
   theme_minimal()
 ```
 
