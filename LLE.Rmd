@@ -20,6 +20,7 @@ library(tictoc)
 library(patchwork)
 library(corrr)
 library(ggpubr)
+library(amerika)
 ```
 
 ```{r}
@@ -56,7 +57,7 @@ web <- anes %>%
 ```
 
 ```{r}
-only_ft <- tv_game_talk_shows %>% # CHANGE DATASET NAME HERE
+only_ft <- radio %>% # CHANGE DATASET NAME HERE
   dplyr::select(starts_with(c("ft_")))
 ```
 
@@ -64,11 +65,11 @@ K is about 96, so will just use that for all datasets since it take over 10 mins
 
 ```{r}
 # Optimal K for only the feeling thermometers
-cores <- detectCores() - 1
+cores <- detectCores()
 cores
   
 tic() 
-find_k <- calc_k(only_ft, # add the only_ft chunk from below somewhere before this code in case you'd like to recalculate the opt_k value
+find_k <- calc_k(only_ft,
                  m = 2, 
                  kmin=1,
                  kmax=200, # not sure what an appropriate upper bound is for 4k+ obs
@@ -84,12 +85,30 @@ lle_fit <- lle(only_ft,
                m = 2,
                k = 96) # Change k as appropriate
 ```
+```{r}
+only_ft%>% 
+  tibble() %>% 
+  ggplot(aes(lle_fit$Y[,1], lle_fit$Y[,2], 
+             col = only_ft[,3])) +
+  geom_point() +
+  labs(x = "X",
+       y = "Y",
+       col = "") +
+  scale_color_gradient(low = amerika_palettes$Democrat[1],
+                       high = amerika_palettes$Republican[1]) +
+  theme_classic() +
+  theme(axis.ticks.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.text.y = element_blank()) +
+  theme(legend.position = "none")
+```
 
 ```{r}
 # UPDATE RESPONSE VARIABLE HERE
-response <- tv_game_talk_shows$tv_the_late_show_with_stephen_colbert
+response <- radio$radio_all_things_considered
 
-tv_game_talk_shows %>%
+radio %>%
   ggplot(aes(x = lle_fit$Y[,1], 
              y = lle_fit$Y[,2], 
              col = as.factor(response),
@@ -99,7 +118,7 @@ tv_game_talk_shows %>%
   labs(x = "First Dimension",
        y = "Second Dimension",
        title = "LLE k = 96",
-       col="Stephen Colbert", # UPDATE RESPONSE LABEL HERE
+       col="Mark Levin", # UPDATE RESPONSE LABEL HERE
        shape="Ideology") + 
   theme_minimal()
 ```
