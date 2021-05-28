@@ -88,6 +88,32 @@ We will use two nonlinear dimension reduction techniques to analyze and visualiz
 \subsubsection*{Locally-linear embedding}
 
 Locally-linear embedding (LLE) is a nonlinear dimension reduction technique that minimizes the Gaussian distance between a set number of neighbors in order to "untangle" a manifold into a low-dimensional representation of the data set analyzed \cite{roweis_nonlinear_2000}. LLE maintains data structure at a local level and is able to provide information about global geometry. Because it is very useful when combined with other methods of data analysis and statistical learning, LLE provides a great starting point for our project.
+ 
+The LLE analysis was run on the cleaned dataset of feeling thermometer responses. After removing null values, the dataset contained 1,732 observations across 31 input features. The feeling thermometers included notable public figures and politicians, including Obama, Bill Clinton, John Roberts and Pope Francis, attitudes toward demographic groups such as Muslims, wealthy people, and feminists, and attitudes toward various political elements such as Black Lives Matter, the Supreme Court, and labor unions.
+
+Before running the LLE algorithm, we found the optimal \textit{k} value to determine appropriate neighborhood size. The graph below shows the output for the \textit{calc_k()} function. The function took about 30 minutes to run with a possible k-value range of 1 to 200. The minimum is located at $k=96$. With this k-value, an LLE fit was created using two dimensions.
+
+\includegraphics[width=400](img/lle_1.png)
+
+The LLE fit captures the separation in both party and ideology of the respondents. Using all seven ideology categories, we see complete separation between the Extremely Liberal and Extremely Conservative categories. Recoding ideology into two categories shows a similar separation, as shown in the figure above, although a slight amount of overlap is apparent in the center. Respondents self-identifying as moderate can be found spread rather far throughout the data space.
+ 
+ \includegraphics[width=400](img/lle_1.png)[[ O'Reilly/Maddow ]]
+ 
+Our goal with the LLE method was visualizing, at a high level, how ideological clustering can exist in the entertainment space as well as the news media space. First, we found, predictably, that \textit{Sean Hannity} and \textit{O'Reilly} Factor viewers skew toward the conservative space. On the other hand, viewers of the \textit{Rachel Maddow Show} skew liberal. Interestingly, the density of the \textit{Sean Hannity} and \textit{O'Reilly Factor} clusters are much denser than the \text_it{Rachel Maddow} cluster - and indeed the rest of the shows catering to liberal audiences. Perhaps some aspect of conservative ideology predicts a tigher grouping in terms of what is presented on TV. On the other hand, liberal news media may also try to cater to moderate audiences as well. We also see that the \textit{Rachel Maddow} cluster only includes a part of the liberal data space, suggesting that the show perhaps caters to only a subset of liberal issues.
+
+Moving into the entertainment space, we fail to see the same, consistent level of ideological separation. \textit{The Big Bang Theory}, a popular sitcom, has a reach that spans nearly the entire data space. We find a similar lack of separation across all types of shows, from sitcoms to cop shows to action shows to reality TV.
+ 
+ \includegraphics[width=400](img/lle_1.png)[[ BBT ]]
+
+Two exceptions do stand out: \textit{Stephen Colbert} and the TV show \textit{Empire}. Stephen Colbert is known for his character that satirizes conservative news hosts. Despite his show being primarily comedy, the themes heavily cater to liberal and moderate audiences.
+ 
+ \includegraphics[width=400](img/lle_1.png)[[ colbert ]]
+
+*Empire* is interesting because its viewers extend into the lower-left extremity of the data space. This is the area that left-leaning media, such as the \textit{Rachel Maddow Show}, failed to capture. \textit{Empire} is a drama series featuring a predominantly Black cast, suggesting that its appeal to non-white audiences allowed it to gain traction in the left-leaning space not reached by other shows. It also suggests that ideological groupings in entertainment can be predicted by facets of self-identification beyond political ideology.
+ 
+ \includegraphics[width=400](img/lle_1.png)[[ Empire ]]
+
+Moving beyond LLE, the finding about \textit{Empire} suggests that analyzing certain cross-sections of the data space may yield more interesting separation. For example, individual cop shows failed to produce separation, but taking that genre as an aggregate and filtering by respondents who also view conservative new media may yield more interesting results.
 
 \subsubsection*{Autoencoders}
 
