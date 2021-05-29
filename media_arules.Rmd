@@ -1,0 +1,104 @@
+---
+title: "Media Association Rules"
+author: "Ruben Heuer"
+date: "5/9/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(arules)
+library(knitr)
+library(webshot)
+library(kableExtra)
+```
+
+```{r, include = FALSE}
+clean <- readRDS("clean.rds")
+
+# imputation function for missing value treatment
+impute_mode <- function(x){
+  ux <- sort(unique(x))
+  mx <- ux[which.max(tabulate(match(x, ux)))]
+  replace(x, is.na(x), mx)
+}
+
+# trimming dataset to include only media data, ideology and party
+clean_impute <- clean %>% 
+  select(radio_all_things_considered:tv_cronicas_de_sabado, ideology, party) %>% 
+  
+  # collapsing factor variables (ideology & party)
+  mutate(
+    ideology = fct_collapse(
+      ideology,
+      Liberal=c("Extremely Liberal", "Liberal", "Slightly Liberal"),
+      Conservative=c("Extremely Conservative", "Conservative", "Slightly Conservative"))) %>%
+  mutate(
+    party = fct_collapse(
+      party,
+      Democrat=c("Strong Democrat", "Democrat", "Lean Democrat"),
+      Republican=c("Strong Republican", "Republican", "Lean Republican"))) %>% 
+  
+  # impute mode for NAs
+  mutate(across(everything(), impute_mode))
+
+# dummy coding ideology & party
+clean_all <- cbind(clean_impute, 
+                   model.matrix(~ideology-1, data = clean_impute),
+                   model.matrix(~party-1, data = clean_impute)) %>% 
+  mutate(across(everything(), as.logical))
+
+clean_ideology <- clean_all %>% 
+  select (-starts_with("party"))
+
+clean_party <- clean_all %>% 
+  select (-starts_with("ideology"))
+
+  
+# converting dataframe into transaction object
+media_trans <- as(clean_ideology, "transactions")
+
+# computing association rules
+media_rules <- apriori(media_trans, 
+                       parameter = list(support = 0.007, 
+                                   confidence = 0.33, 
+                                   minlen = 2, maxlen = 5))
+
+# removing redundant rules
+media_rules <- media_rules[!is.redundant(media_rules)]
+
+# filtering for specific ideology as rhs and lift value
+{
+conservative_rules <- subset(media_rules, rhs %in% "ideologyConservative" & lift > 1.5 & count >= 50) %>%
+  as("data.frame") %>% 
+  select(-support) %>% 
+  arrange(desc(confidence, count))
+moderate_rules <- subset(media_rules, rhs %in% "ideologyModerate" & lift > 1.5& count >= 50) %>%
+  as("data.frame") %>% 
+  select(-support) %>% 
+  arrange(desc(confidence))
+liberal_rules <- subset(media_rules, rhs %in% "ideologyLiberal" & lift > 1.5& count >= 50) %>%
+  as("data.frame") %>% 
+  select(-support) %>% 
+  arrange(desc(confidence))
+}
+```
+
+
+```{r}
+kable(head(conservative_rules, 10), digits = 2,
+      caption = "Association Rules with RHS = Conservative",
+      col.names = c("Rules", "Conf.", "Cov.", "Lift", "Count")) %>% 
+  save_kable("ae_plots/conservative_rules.png")
+kable(head(moderate_rules, 10), digits = 2,
+      caption = "Association Rules with RHS = Moderate",
+      col.names = c("Rules", "Conf.", "Cov.", "Lift", "Count")) %>% 
+  save_kable("ae_plots/moderate_rules.png")
+kable(head(liberal_rules, 10), digits = 2,
+      caption = "Association Rules with RHS = Liberal",
+      col.names = c("Rules", "Conf.", "Cov.", "Lift", "Count")) %>% 
+  save_kable("ae_plots/liberal_rules.png")
+```
+
