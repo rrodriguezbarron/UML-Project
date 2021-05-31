@@ -1,0 +1,296 @@
+---
+title: "Autoencoder"
+author: "Spencer Ferguson-Dryden"
+date: "5/9/2021"
+output: pdf_document
+---
+```{r, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, error = FALSE)
+```
+
+```{r echo = TRUE, eval = TRUE, include = FALSE}
+# Load libraries
+library(tidyverse)
+library(here)
+library(amerika)
+library(tictoc)
+library(h2o) 
+library(bit64)
+library(patchwork)
+
+theme_set(theme_minimal())
+```
+
+Cleaning/Recoding
+
+```{r}
+clean <- readRDS("clean.rds")
+
+media_names <- names(clean %>% select(radio_all_things_considered:tv_cronicas_de_sabado))
+
+# imputation function for missing value treatment
+impute_mode <- function(x){
+  ux <- sort(unique(x))
+  mx <- ux[which.max(tabulate(match(x, ux)))]
+  replace(x, is.na(x), mx)
+}
+
+# trimming dataset to include only media data, ideology and party
+clean_no_missing <- clean %>% 
+  select(starts_with("ft"), all_of(media_names), ideology, party) %>% 
+  
+  # collapsing factor variables (ideology & party)
+  mutate(
+    ideology = fct_collapse(
+      ideology,
+      Liberal=c("Extremely Liberal", "Liberal", "Slightly Liberal"),
+      Conservative=c("Extremely Conservative", "Conservative", "Slightly Conservative"))) %>%
+  mutate(
+    party=fct_collapse(
+      party,
+      Democrat=c("Strong Democrat", "Democrat", "Lean Democrat"),
+      Republican=c("Strong Republican", "Republican", "Lean Republican"))) %>% 
+  
+#   impute mode for NAs
+  mutate(across(-starts_with("ft"), impute_mode))
+```
+
+Constructing the Autoencoder
+
+```{r results='hide', message=FALSE}
+# fitting
+my_h2o <- h2o.init()
+# h2o df
+anes_h2o <- clean_no_missing %>% as.h2o()
+# train, val, test
+split_frame <- h2o.splitFrame(anes_h2o, 
+                              ratios = c(0.8), 
+                              seed = 1234)   
+
+train <- split_frame[[1]]
+test <- split_frame[[2]]
+
+# Select response/predictor variables
+response <- clean_no_missing %>%
+  dplyr::select(starts_with(c("radio_", "tv_", "web_"))) %>% names()
+response <- append(response, 
+                   c('ideology', 'party'))
+predictors <- setdiff(colnames(train), response)
+```
+
+
+```{r results='hide'}
+# Run the AE algorithm with 3 layers
+set.seed(1234)
+
+{tic()
+autoencoder <- h2o.deeplearning(x = predictors,
+                                training_frame = train,
+                                autoencoder = TRUE,  
+                                hidden = c(8, 8, 2),
+                                epochs = 500, 
+                                activation = "Tanh")
+toc()}
+```
+
+```{r}
+names(train)
+```
+
+```{r}
+# Extract and store the two features
+
+search_var <- function(x){
+  which(str_contains(names(train), x) == TRUE)
+}
+
+var_1 <- 66  # Hannity
+var_2 <- 105 # The O'Reilly Factor
+var_3 <- 87  # On the Record with Greta Van Susteren
+var_4 <- 70  # NCIs
+var_5 <- 93  # Blue Bloods
+  
+codings_train <- h2o.deepfeatures(autoencoder, 
+                                  data = train, 
+                                  layer = 3) %>%
+  as.data.frame() %>%
+  mutate(var_1 = as.vector(train[ , var_1])) %>%
+  mutate(var_2 = as.vector(train[ , var_2])) %>%
+  mutate(var_3 = as.vector(train[ , var_3])) %>% 
+  mutate(var_4 = as.vector(train[ , var_4])) %>%
+  mutate(var_5 = as.vector(train[ , var_5])) %>% 
+  mutate(var_12 = var_1 == 1 & var_2 == 1) %>% 
+  mutate(var_123 = var_1 == 1 & var_2 == 1 & var_3 == 1) %>%
+  mutate(var_14 = var_1 == 1 & var_4 == 1) %>% 
+  mutate(var_145 = var_1 == 1 & var_4 == 1 & var_5 == 1) %>%
+  mutate(ideology = as.vector(train[ , 124])) %>% 
+  mutate(party = as.vector(train[ , 125])) 
+
+codings_test <- h2o.deepfeatures(autoencoder, 
+                                  data = test, 
+                                  layer = 3) %>%
+  as.data.frame() %>%
+  mutate(var_1 = as.vector(test[ , var_1])) %>%
+  mutate(var_2 = as.vector(test[ , var_2])) %>%
+  mutate(var_3 = as.vector(test[ , var_3])) %>% 
+  mutate(var_12 = var_1 == 1 & var_2 == 1) %>% 
+  mutate(var_123 = var_1 == 1 & var_2 == 1 & var_3 == 1) %>% 
+  mutate(ideology = as.vector(test[ , 124])) %>% 
+  mutate(party = as.vector(test[ , 125]))
+
+fimp <- as.data.frame(h2o.varimp(autoencoder)) %>% 
+  arrange(desc(relative_importance))
+
+fimp_plot <- fimp %>% 
+  ggplot(aes(x = relative_importance, 
+             y = reorder(variable, -relative_importance))) +
+  geom_point(color = "dark red", 
+             fill = "dark red", 
+             alpha = 0.5,
+             size = 2) +
+  labs(title = "Relative Feature \nImportance",
+       subtitle = "Deep Autoencoder",
+       x = "Relative Importance",
+       y = "")
+```
+
+```{r}
+ideology_train_ae <- ggplot(codings_train, aes(x = DF.L3.C1, 
+                          y = DF.L3.C2, 
+                          color = factor(ideology))) +
+  geom_point(alpha = 0.6) + 
+  stat_ellipse(aes(group=factor(ideology))) +
+  theme_minimal() +
+  labs(x = "Layer 3 - Node 1",
+       y = "Layer 3 - Node 2",
+       color = "Ideology") +
+  theme(legend.position="bottom") +
+  scale_color_manual(values=c("#cc0000", "#013364", "#cbcaca"))
+
+ideology_test_ae <- ggplot(codings_test, aes(x = DF.L3.C1, 
+                          y = DF.L3.C2, 
+                          color = factor(ideology))) +
+  geom_point(alpha = 0.6) + 
+  stat_ellipse(aes(group=factor(ideology))) +
+  theme_minimal() +
+  labs(x = "Layer 3 - Node 1",
+       y = "Layer 3 - Node 2",
+       color = "Ideology") +
+  theme(legend.position="bottom") +
+  scale_color_manual(values=c("#cc0000", "#013364", "#cbcaca"))
+
+ideology_both_plot <- ideology_train_ae + ideology_test_ae
+```
+
+```{r}
+hannity_ae <- ggplot(codings_train, aes(x = DF.L3.C1, 
+                          y = DF.L3.C2, 
+                          color = factor(var_1))) +
+  geom_point(alpha = 0.6) + 
+  stat_ellipse(aes(group=factor(var_1))) +
+  theme_minimal() +
+  labs(color = "Sean Hannity") +
+  scale_color_discrete(labels = c("No", "Yes")) +
+  theme(legend.position="bottom")
+
+ncis_ae <- ggplot(codings_train, aes(x = DF.L3.C1, 
+                          y = DF.L3.C2, 
+                          color = factor(var_4))) +
+  geom_point(alpha = 0.6) + 
+  stat_ellipse(aes(group=factor(var_4))) +
+  theme_minimal() +
+  labs(color = "NCIS") +
+  scale_color_discrete(labels = c("No", "Yes")) +
+  theme(legend.position="bottom")
+
+hannity_ncis_ae <- ggplot(codings_train, aes(x = DF.L3.C1, 
+                          y = DF.L3.C2, 
+                          color = factor(var_14),
+                          shape = ideology=="Conservative")) +
+  geom_point(alpha = 0.6) + 
+  stat_ellipse(aes(group=factor(var_14))) +
+  theme_minimal() +
+  labs(color = "Hannity \n& NCIS",
+       shape = "Conservative?") +
+  scale_color_discrete(labels = c("No", "Yes")) +
+  scale_shape_discrete(labels = c("No", "Yes")) +
+  theme(legend.position="bottom")
+
+compare_hannity_ncis <- hannity_ae + ncis_ae
+```
+
+
+```{r}
+o_reilly_ae <- ggplot(codings_train, aes(x = DF.L3.C1, 
+                          y = DF.L3.C2, 
+                          color = factor(var_2))) +
+  geom_point(alpha = 0.6) + 
+  stat_ellipse(aes(group=factor(var_2))) +
+  theme_minimal() +
+  labs(color = "O-Reilly") +
+  scale_color_discrete(labels = c("No", "Yes")) +
+  theme(legend.position="bottom")
+
+record_ae <- ggplot(codings_train, aes(x = DF.L3.C1, 
+                          y = DF.L3.C2, 
+                          color = factor(var_3))) +
+  geom_point(alpha = 0.6) + 
+  stat_ellipse(aes(group=factor(var_3))) +
+  theme_minimal() +
+  labs(color = "OTR") +
+  scale_color_discrete(labels = c("No", "Yes")) +
+  theme(legend.position="bottom")
+
+intersect_ae <- ggplot(codings_train, aes(x = DF.L3.C1, 
+                          y = DF.L3.C2, 
+                          color = factor(var_123),
+                          shape = ideology == "Conservative")) +
+  geom_point(alpha = 0.6) + 
+  stat_ellipse(aes(group=factor(var_123))) +
+  theme_minimal() +
+  labs(color = "Hannity,\nO'Reilly & OTR",
+       shape = "Conservative?") +
+  scale_color_discrete(labels = c("No", "Yes")) +
+  scale_shape_discrete(labels = c("No", "Yes")) +
+  theme(legend.position="bottom")
+
+compare_plot <- intersect_ae + hannity_ncis_ae
+three_plot <- hannity_ae + o_reilly_ae + record_ae
+```
+
+```{r}
+set.seed(1234)
+
+codings_kmeans <- codings_train %>% 
+  mutate(k = kmeans(codings_train[,1:2], 3, nstart = 20)$cluster) %>% 
+  mutate(k = factor(k, labels = c("Conservative", "Liberal", "Moderate"),
+                                  levels = c(1,3,2)))
+
+truth_plot <- ggplot(codings_kmeans, aes(x = DF.L3.C1, 
+                          y = DF.L3.C2, 
+                          color = factor(ideology))) +
+  geom_point(alpha = 0.6) + 
+  stat_ellipse(aes(group=factor(k))) +
+  theme_minimal() +
+  labs(x = "Layer 3 - Node 1",
+       y = "Layer 3 - Node 2",
+       color = "Ideology") +
+  theme(legend.position="bottom") +
+  scale_color_manual(values=c("#cc0000", "#013364", "#cbcaca"))
+```
+
+```{r}
+ggsave(plot = fimp_plot, "ae_plots/fimp_plot.png", device = "png")
+ggsave(plot = ideology_both_plot, "ae_plots/ideology_both_plot.png", device = "png")
+ggsave(plot = compare_hannity_ncis, "ae_plots/compare_hannity_ncis.png", device = "png")
+ggsave(plot = intersect_ae, "ae_plots/intersect_ae.png", device = "png",
+       width = 12, height = 16, units = "cm")
+ggsave(plot = compare_plot, "ae_plots/compare_plot.png", device = "png",
+       width = 25, height = 15, units = "cm")
+ggsave(plot = three_plot, "ae_plots/three_plot.png", device = "png",
+       width = 15, height = 15, units = "cm")
+
+ggsave(plot = truth_plot, "ae_plots/truth_ae.png", device = "png",
+       width = 25, height = 15, units = "cm")
+```
+
