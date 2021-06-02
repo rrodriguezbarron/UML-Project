@@ -100,95 +100,29 @@ We supplement our data analysis with autoencoders (AE), which a a special form o
 
 The LLE analysis was run on the cleaned dataset of feeling thermometer responses. After removing null values, the dataset contained 1,732 observations across 31 input features. The feeling thermometers included notable public figures and politicians, including Obama, Bill Clinton, John Roberts and Pope Francis, attitudes toward demographic groups such as Muslims, wealthy people, and feminists, and attitudes toward various political elements such as Black Lives Matter, the Supreme Court, and labor unions.
 
-Before running the LLE algorithm, we found the optimal $k$ value to determine appropriate neighborhood size. The graph below shows the output for the calc_k function. The function took about 30 minutes to run with a possible k-value range of 1 to 200. The minimum is located at $k=96$. With this k-value, an LLE fit was created using two dimensions. The resulting output is shown below. 
-
-\begin{figure}
-\centering
-\includegraphics[width=.8\linewidth]{frog.eps}
-\caption{Optimal k-value search results.}
-\end{figure}
+Before running the LLE algorithm, we found the optimal $k$ value to determine appropriate neighborhood size. The graph below shows the output for the minimum k algorithm. The function took about 30 minutes to run with a possible k-value range of 1 to 200. The minimum is located at $k=96$. With this k-value, an LLE fit was created using two dimensions.
 
 \subsection{Initial Analysis}
 
 \begin{figure}
 \centering
-\includegraphics[width=.8\linewidth]{frog.eps}
-\caption{Overview of the LLE data space.}
+\includegraphics[width=.8\linewidth]{lle_1.png}
+\caption{Overview of the LLE data space colored by Ideology.}
 \end{figure}
 
 At a first glance, the LLE fit captures the separation in both party and ideology of the respondents. Using all seven ideology categories, we see complete separation between the Extremely Liberal and Extremely Conservative categories. Recoding ideology into two categories shows a similar separation, although a slight amount of overlap is apparent in the center. Respondents self-identifying as moderate can be found spread rather far throughout the data space.
 
-\begin{figure}
-\centering
-\includegraphics[width=.8\linewidth]{frog.eps}
-\caption{Ideological separation using 7 self-reported categories.}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=.8\linewidth]{frog.eps}
-\caption{Ideological separation using 3 self-reported categories.}
-\end{figure}
-
 Separation by self-identified party follows the same structure. There is some overlap between Democrats and Republicans in the center, while self-identified Independents are clustered in the center, but do exist toward the fringes as well.
-
-\begin{figure}
-\centering
-\includegraphics[width=.8\linewidth]{frog.eps}
-\caption{Party separation using 3 self-reported categories.}
-\end{figure}
 
 \subsection{Analysis of Radio Consumption}
 
-\begin{figure}
-\centering
-\includegraphics[width=.8\linewidth]{frog.eps}
-\caption{Separation in radio consumption: All Things Considered.}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=.8\linewidth]{frog.eps}
-\caption{Separation in radio consumption: Sean Hannity and Rush Limbaugh.}
-\end{figure}
-
-For the most part, there is very obvious separation in terms of radio listeners across a variety of programs. The *All Things Considered* show, for example, has an audience that mainly skews liberal, although it gains some traction in the moderate space. Rush Limbaugh's show, which is notable for its long history of conservative bias, has exclusively conservative listeners. We see a similar pattern for many of the other shows.
-
-\begin{figure}
-\centering
-\includegraphics[width=.8\linewidth]{frog.eps}
-\caption{Separation in radio consumption: radio usage.}
-\end{figure}
+For the most part, there is very obvious separation in terms of radio listeners across a variety of programs. The _All Things Considered_ show, for example, has an audience that mainly skews liberal, although it gains some traction in the moderate space. Rush Limbaugh's show, which is notable for its long history of conservative bias, has exclusively conservative listeners. We see a similar pattern for many of the other shows.
 
 Also of note is the structure of the answer to "Do you use the radio to consume media?" The highest density of respondents who do not listen to the radio is located in the center of the data space, while the fringes have a higher density of radio listeners. This suggests that there is some grouping behavior not only by the show listened to, but also by the medium itself.
 
 \subsection{Analysis of Websites}
 
-\begin{figure}
-\centering
-\includegraphics[width=.8\linewidth]{frog.eps}
-\caption{Separation in websites visited: New York Times.}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=.8\linewidth]{frog.eps}
-\caption{Separation in websites visited: Huffington Post.}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=.8\linewidth]{frog.eps}
-\caption{Separation in websites visited: Buzzfeed.}
-\end{figure}
-
 Like the radio analysis, there is clear ideological separation in the websites respondents visit in order to consume their news. On the liberal side, we see respondents heading to Buzzfeed, Huffington Post, and the New York Times website. On the conservative side, respondents tend to head to Fox News. These are not surprising findings given the well-documented partisanship of the American news environment, but do provide evidence to suggest that ideological clustering extends to Internet media sources as well as traditional media sources.
-
-\begin{figure}
-\centering
-\includegraphics[width=.8\linewidth]{frog.eps}
-\caption{Separation in websites visited: Fox News.}
-\end{figure}
 
 \subsection{Analysis of TV}
 
@@ -196,49 +130,43 @@ With the TV analysis, we were able to understand how ideological clustering can 
 
 \begin{figure}
 \centering
-\includegraphics[width=.8\linewidth]{frog.eps}
-\caption{Separation in TV shows watched: Sean Hannity.}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=.8\linewidth]{frog.eps}
+\includegraphics[width=.8\linewidth]{lle_2.png}
 \caption{Separation in TV shows watched: the O'Reilly Factor.}
 \end{figure}
 
 \begin{figure}
 \centering
-\includegraphics[width=.8\linewidth]{frog.eps}
+\includegraphics[width=.8\linewidth]{lle_3.png}
 \caption{Separation in TV shows watched: Rachel Maddow.}
 \end{figure}
 
-First, we see the predictable results that *Sean Hannity* and *O'Reilly* Factor viewers skew toward the conservative space. On the other hand, viewers of the *Rachel Maddow Show* skew liberal. Interestingly, the density of the *Sean Hannity* and *O'Reilly Factor* clusters are much denser than the *Rachel Maddow* cluster - and indeed the rest of the shows catering to liberal audiences. Perhaps some aspect of conservative ideology predicts a tigher groupin in terms of what is presented on TV. On the other hand, liberal news media may also try to cater to moderate audiences as well. We also see that the *Rachel Maddow* cluster only includes a part of the liberal data space, suggesting that the show perhaps caters to only a subset of liberal issues.
+First, we see the predictable results that Sean Hannity and _O'Reilly Factor_ viewers skew toward the conservative space. On the other hand, viewers of the _Rachel Maddow Show_ skew liberal. Interestingly, the density of the Sean Hannity and _O'Reilly Factor_ clusters are much denser than the Rachel Maddow cluster - and indeed the rest of the shows catering to liberal audiences. Perhaps some aspect of conservative ideology predicts a tighter grouping in terms of what is presented on TV. On the other hand, liberal news media may also try to cater to moderate audiences as well. We also see that the Rachel Maddow cluster only includes a part of the liberal data space, suggesting that the show perhaps caters to only a subset of liberal issues.
 
 \begin{figure}
 \centering
-\includegraphics[width=.8\linewidth]{frog.eps}
+\includegraphics[width=.8\linewidth]{lle_4.png}
 \caption{Separation in TV shows watched: The Big Bang Theory.}
 \end{figure}
 
-Moving into the entertainment space, we fail to see the same, consistent level of ideological separation. *The Big Bang Theory*, a popular sitcom, has a reach that spans nearly the entire data space. We find a similar lack of separation across all types of shows, from sitcoms to cop shows to action shows to reality TV.
+Moving into the entertainment space, we fail to see the same, consistent level of ideological separation. _The Big Bang Theory_, a popular sitcom, has a reach that spans nearly the entire data space. We find a similar lack of separation across all types of shows, from sitcoms to cop shows to action shows to reality TV.
 
 \begin{figure}
 \centering
-\includegraphics[width=.8\linewidth]{frog.eps}
+\includegraphics[width=.8\linewidth]{lle_5.png}
 \caption{Separation in TV shows watched: Stephen Colbert.}
 \end{figure}
 
-Two exceptions do stand out: *Stephen Colbert* and the TV show *Empire*. Stephen Colbert is known for his character that satirizes conservative news hosts. Despite his show being primarily comedy, the themes heavily cater to liberal and moderate audiences.
+Two exceptions do stand out: Stephen Colbert and the TV show _Empire_. Stephen Colbert is known for his character that satirizes conservative news hosts. Despite his show being primarily comedy, the themes heavily cater to liberal and moderate audiences.
 
 \begin{figure}
 \centering
-\includegraphics[width=.8\linewidth]{frog.eps}
+\includegraphics[width=.8\linewidth]{lle_6.png}
 \caption{Separation in TV shows watched: Empire.}
 \end{figure}
 
-*Empire* is interesting because its viewers extend into the lower-left extremity of the data space. This is the area that left-leaning media, such as the *Rachel Maddow Show* failed to capture. *Empire* is a drama series featuring a predominantly Black cast, suggesting that its appeal to non-white audiences allowed it to gain traction in the left-leaning space not reached by other shows. It also suggests that ideological groupings in entertainment can be predicted by facets of self-identification beyond political ideology.
+_Empire_ is interesting because its viewers extend into the lower-left extremity of the data space. This is the area that left-leaning media, such as the _Rachel Maddow Show_ failed to capture. _Empire_ is a drama series featuring a predominantly Black cast, suggesting that its appeal to non-white audiences allowed it to gain traction in the left-leaning space not reached by other shows. It also suggests that ideological groupings in entertainment can be predicted by facets of self-identification beyond political ideology.
 
-Moving beyond LLE, the finding about *Empire* suggests that analyzing certain cross-sections of the data space may yield more interesting separation. For example, individual cop shows failed to produce separation, but taking that genre as an aggregate and filtering by respondents who also view conservative new media may yield more interesting results.
+Moving beyond LLE, the finding about _Empire_ suggests that analyzing certain cross-sections of the data space may yield more interesting separation. For example, individual cop shows failed to produce separation, but taking that genre as an aggregate and filtering by respondents who also view conservative new media may yield more interesting results.
 
 \section{Autoencoders}
 
