@@ -100,50 +100,145 @@ We supplement our data analysis with autoencoders (AE), which a a special form o
 
 The LLE analysis was run on the cleaned dataset of feeling thermometer responses. After removing null values, the dataset contained 1,732 observations across 31 input features. The feeling thermometers included notable public figures and politicians, including Obama, Bill Clinton, John Roberts and Pope Francis, attitudes toward demographic groups such as Muslims, wealthy people, and feminists, and attitudes toward various political elements such as Black Lives Matter, the Supreme Court, and labor unions.
 
-Before running the LLE algorithm, we found the optimal $k$ value to determine appropriate neighborhood size. The graph below shows the output for the minimum k algorithm. The function took about 30 minutes to run with a possible k-value range of 1 to 200. The minimum is located at $k=96$. With this k-value, an LLE fit was created using two dimensions.
+Before running the LLE algorithm, we found the optimal $k$ value to determine appropriate neighborhood size. The graph below shows the output for the calc_k function. The function took about 30 minutes to run with a possible k-value range of 1 to 200. The minimum is located at $k=96$. With this k-value, an LLE fit was created using two dimensions. The resulting output is shown below. 
+
+\begin{figure}
+\centering
+\includegraphics[width=.8\linewidth]{frog.eps}
+\caption{Optimal k-value search results.}
+\end{figure}
 
 \subsection{Initial Analysis}
 
-![Overview of the LLE data space.](Images/lle_1.png)
+\begin{figure}
+\centering
+\includegraphics[width=.8\linewidth]{frog.eps}
+\caption{Overview of the LLE data space.}
+\end{figure}
 
 At a first glance, the LLE fit captures the separation in both party and ideology of the respondents. Using all seven ideology categories, we see complete separation between the Extremely Liberal and Extremely Conservative categories. Recoding ideology into two categories shows a similar separation, although a slight amount of overlap is apparent in the center. Respondents self-identifying as moderate can be found spread rather far throughout the data space.
 
+\begin{figure}
+\centering
+\includegraphics[width=.8\linewidth]{frog.eps}
+\caption{Ideological separation using 7 self-reported categories.}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=.8\linewidth]{frog.eps}
+\caption{Ideological separation using 3 self-reported categories.}
+\end{figure}
+
 Separation by self-identified party follows the same structure. There is some overlap between Democrats and Republicans in the center, while self-identified Independents are clustered in the center, but do exist toward the fringes as well.
+
+\begin{figure}
+\centering
+\includegraphics[width=.8\linewidth]{frog.eps}
+\caption{Party separation using 3 self-reported categories.}
+\end{figure}
 
 \subsection{Analysis of Radio Consumption}
 
-For the most part, there is very obvious separation in terms of radio listeners across a variety of programs. The _All Things Considered_ show, for example, has an audience that mainly skews liberal, although it gains some traction in the moderate space. Rush Limbaugh's show, which is notable for its long history of conservative bias, has exclusively conservative listeners. We see a similar pattern for many of the other shows.
+\begin{figure}
+\centering
+\includegraphics[width=.8\linewidth]{frog.eps}
+\caption{Separation in radio consumption: All Things Considered.}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=.8\linewidth]{frog.eps}
+\caption{Separation in radio consumption: Sean Hannity and Rush Limbaugh.}
+\end{figure}
+
+For the most part, there is very obvious separation in terms of radio listeners across a variety of programs. The *All Things Considered* show, for example, has an audience that mainly skews liberal, although it gains some traction in the moderate space. Rush Limbaugh's show, which is notable for its long history of conservative bias, has exclusively conservative listeners. We see a similar pattern for many of the other shows.
+
+\begin{figure}
+\centering
+\includegraphics[width=.8\linewidth]{frog.eps}
+\caption{Separation in radio consumption: radio usage.}
+\end{figure}
 
 Also of note is the structure of the answer to "Do you use the radio to consume media?" The highest density of respondents who do not listen to the radio is located in the center of the data space, while the fringes have a higher density of radio listeners. This suggests that there is some grouping behavior not only by the show listened to, but also by the medium itself.
 
 \subsection{Analysis of Websites}
 
+\begin{figure}
+\centering
+\includegraphics[width=.8\linewidth]{frog.eps}
+\caption{Separation in websites visited: New York Times.}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=.8\linewidth]{frog.eps}
+\caption{Separation in websites visited: Huffington Post.}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=.8\linewidth]{frog.eps}
+\caption{Separation in websites visited: Buzzfeed.}
+\end{figure}
+
 Like the radio analysis, there is clear ideological separation in the websites respondents visit in order to consume their news. On the liberal side, we see respondents heading to Buzzfeed, Huffington Post, and the New York Times website. On the conservative side, respondents tend to head to Fox News. These are not surprising findings given the well-documented partisanship of the American news environment, but do provide evidence to suggest that ideological clustering extends to Internet media sources as well as traditional media sources.
+
+\begin{figure}
+\centering
+\includegraphics[width=.8\linewidth]{frog.eps}
+\caption{Separation in websites visited: Fox News.}
+\end{figure}
 
 \subsection{Analysis of TV}
 
 With the TV analysis, we were able to understand how ideological clustering can exist in the entertainment space as well as the news media space.
 
-![Separation in TV shows watched: the O'Reilly Factor](Images/lle_2.png)
+\begin{figure}
+\centering
+\includegraphics[width=.8\linewidth]{frog.eps}
+\caption{Separation in TV shows watched: Sean Hannity.}
+\end{figure}
 
-![Separation in TV shows watched: Rachel Maddow](Images/lle_3.png)
+\begin{figure}
+\centering
+\includegraphics[width=.8\linewidth]{frog.eps}
+\caption{Separation in TV shows watched: the O'Reilly Factor.}
+\end{figure}
 
+\begin{figure}
+\centering
+\includegraphics[width=.8\linewidth]{frog.eps}
+\caption{Separation in TV shows watched: Rachel Maddow.}
+\end{figure}
 
-First, we see the predictable results that _Sean Hannity_ and _O'Reilly Factor_ viewers skew toward the conservative space. On the other hand, viewers of the _Rachel Maddow Show_ skew liberal. Interestingly, the density of the _Sean Hannity_ and _O'Reilly Factor_ clusters are much denser than the _Rachel Maddow_ cluster - and indeed the rest of the shows catering to liberal audiences. Perhaps some aspect of conservative ideology predicts a tigher groupin in terms of what is presented on TV. On the other hand, liberal news media may also try to cater to moderate audiences as well. We also see that the _Rachel Maddow_ cluster only includes a part of the liberal data space, suggesting that the show perhaps caters to only a subset of liberal issues.
+First, we see the predictable results that *Sean Hannity* and *O'Reilly* Factor viewers skew toward the conservative space. On the other hand, viewers of the *Rachel Maddow Show* skew liberal. Interestingly, the density of the *Sean Hannity* and *O'Reilly Factor* clusters are much denser than the *Rachel Maddow* cluster - and indeed the rest of the shows catering to liberal audiences. Perhaps some aspect of conservative ideology predicts a tigher groupin in terms of what is presented on TV. On the other hand, liberal news media may also try to cater to moderate audiences as well. We also see that the *Rachel Maddow* cluster only includes a part of the liberal data space, suggesting that the show perhaps caters to only a subset of liberal issues.
 
-![Separation in TV shows watched: The Big Bang Theory](Images/lle_4.png)
+\begin{figure}
+\centering
+\includegraphics[width=.8\linewidth]{frog.eps}
+\caption{Separation in TV shows watched: The Big Bang Theory.}
+\end{figure}
 
-Moving into the entertainment space, we fail to see the same, consistent level of ideological separation. _The Big Bang Theory_, a popular sitcom, has a reach that spans nearly the entire data space. We find a similar lack of separation across all types of shows, from sitcoms to cop shows to action shows to reality TV.
+Moving into the entertainment space, we fail to see the same, consistent level of ideological separation. *The Big Bang Theory*, a popular sitcom, has a reach that spans nearly the entire data space. We find a similar lack of separation across all types of shows, from sitcoms to cop shows to action shows to reality TV.
 
-![Separation in TV shows watched: Stephen Colbert](Images/lle_5.png)
+\begin{figure}
+\centering
+\includegraphics[width=.8\linewidth]{frog.eps}
+\caption{Separation in TV shows watched: Stephen Colbert.}
+\end{figure}
 
-Two exceptions do stand out: _Stephen Colbert_ and the TV show _Empire_. Stephen Colbert is known for his character that satirizes conservative news hosts. Despite his show being primarily comedy, the themes heavily cater to liberal and moderate audiences.
+Two exceptions do stand out: *Stephen Colbert* and the TV show *Empire*. Stephen Colbert is known for his character that satirizes conservative news hosts. Despite his show being primarily comedy, the themes heavily cater to liberal and moderate audiences.
 
-![Separation in TV shows watched: Empire](Images/lle_6.png)
+\begin{figure}
+\centering
+\includegraphics[width=.8\linewidth]{frog.eps}
+\caption{Separation in TV shows watched: Empire.}
+\end{figure}
 
-_Empire_ is interesting because its viewers extend into the lower-left extremity of the data space. This is the area that left-leaning media, such as the _Rachel Maddow Show_ failed to capture. _Empire_ is a drama series featuring a predominantly Black cast, suggesting that its appeal to non-white audiences allowed it to gain traction in the left-leaning space not reached by other shows. It also suggests that ideological groupings in entertainment can be predicted by facets of self-identification beyond political ideology.
+*Empire* is interesting because its viewers extend into the lower-left extremity of the data space. This is the area that left-leaning media, such as the *Rachel Maddow Show* failed to capture. *Empire* is a drama series featuring a predominantly Black cast, suggesting that its appeal to non-white audiences allowed it to gain traction in the left-leaning space not reached by other shows. It also suggests that ideological groupings in entertainment can be predicted by facets of self-identification beyond political ideology.
 
-Moving beyond LLE, the finding about _Empire_ suggests that analyzing certain cross-sections of the data space may yield more interesting separation. For example, individual cop shows failed to produce separation, but taking that genre as an aggregate and filtering by respondents who also view conservative new media may yield more interesting results.
+Moving beyond LLE, the finding about *Empire* suggests that analyzing certain cross-sections of the data space may yield more interesting separation. For example, individual cop shows failed to produce separation, but taking that genre as an aggregate and filtering by respondents who also view conservative new media may yield more interesting results.
 
 \section{Autoencoders}
 
@@ -155,34 +250,57 @@ To numerically guide our exploration of the autoencoder embeddings, we deployed 
 
 Inspecting relative feature importance, we see that feelings towards certain politicians play the most significant role in determining the structure of the autoencoder space. Among these are former presidents Obama and Trump as well as presidential candidate Hillary Clinton. In addition, feelings towards the Republican and Democrat party as well as the Black Lives Matter movement seem to explain a large portion of the variation in the reduced dataspace. Feelings towards groups associated with particular sociopolitical discourses such as transgender people, feminists, Muslims and Christians score in the mid-range of feature importance while less popular politicians such as chief justice John Roberts seem to contribute little in reconstructing the input space. As the feature importance, at first glance, seems to correlate with the degree of media coverage the respective persons and groups receive, it seems likely to find media consumption reflected in the reduced dataspace of our autoencoder.
 
-![Relative feature importance of feeling-thermometer data.](ae_plots/fimp_plot.png)
+\begin{figure}
+\centering
+\includegraphics[width=.8\linewidth]{frog.eps}
+\caption{Relative feature importance of feeling-thermometer data.}
+\end{figure}
 
 Just as in the plots obtained in the LLE analysis, we can see similar degrees of separation in terms of ideology as well as party affiliation with moderates again slightly more dispersed than liberals and conservatives and an analogous tendency regarding the partisan aspect. Comparing training and validation set, we obtained a similar picture with respect to the spatial distribution of ideology and party, lending additional face validity to our previous results. In the sparse plot of the validation set, we can easily see that the three ideological leanings are not equally represented in our dataset. Only about 20\% of the respondents are self-reported moderates, whereas the bulk of observations (about 55\%) represents the ideologically conservative part of the electorate. This numerical difference could put as at a disadvantage when examining smaller subsets of the data, such as particular combinations of media consumption. This will become apparent in the next phase of our analysis.
 
-![Ideological separation in training and test set.](ae_plots/ideology_both_plot.png)
+\begin{figure}
+\centering
+\includegraphics[width=.8\linewidth]{frog.eps}
+\caption{Ideological separation in training and test set.}
+\end{figure}
 
 \subsection{Combination of Media Items}
 
-In a next step, we conducted association rule mining on the media space to guide our exploration of the autoencoder embeddings, restricting the consequent of each rule to be either party affiliation or self-reported ideology associated with each observation. Association rules are derived from the domain of market basket analysis and provide, among other features, a numerical measure for the confidence in the co-occurrence of given binary variables. Commonly operating over large dataspaces, association rule mining aims at extracting interesting rules of the type *Item A* + *Item B* + … -> *Item C*, where interestingness is defined in terms of a prespecified performance metric. As a primary metric we chose the so-called lift value which designates improvement over a random choice model. Within the restricted set of rules, we inspected those with a lift higher than 1.5. A set of high-confidence association rules extracted in this way for a conservative consequent takes the following form:
+In a next step, we conducted association rule mining on the media space to guide our exploration of the autoencoder embeddings, restricting the consequent of each rule to be either party affiliation or self-reported ideology associated with each observation. Association rules are derived from the domain of market basket analysis and provide, among other features, a numerical measure for the confidence in the co-occurrence of given binary variables. Commonly operating over large dataspaces, association rule mining aims at extracting interesting rules of the type *Item A* + *Item B* + … -> *Item C*, where interestingness is defined in terms of a pre-specified performance metric. As a primary metric we chose the so-called lift value which designates improvement over a random choice model. Within the restricted set of rules, we inspected those with a lift higher than 1.5. A set of high-confidence association rules extracted in this way for a conservative consequent takes the following form:
 
-![Association rules with conservative ideology as RHS.](ae_plots/conservative_rules.png){width=90\%}
+\begin{figure}
+\centering
+\includegraphics[width=.8\linewidth]{frog.eps}
+\caption{Association rules with conservative ideology as RHS.}
+\end{figure}
 
 Interestingly, a search over moderate consequents yields less useful rules, indicated by considerably lower lift and confidence values. A confidence value of around 0.33 indicates that of all rules containing the antecedent, only 33\% have moderate as a consequent. Given that only 894 of 4270 (about 20\%) of the respondents self-reported moderate as their ideology, this still seems like an improvement over a random choice model.
 
-![Association rules with moderate ideology as RHS.](ae_plots/moderate_rules.png){width=90\%}
+\begin{figure}
+\centering
+\includegraphics[width=.8\linewidth]{frog.eps}
+\caption{Association rules with moderate ideology as RHS.}
+\end{figure}
 
 In our analysis we used association rules mainly to provide us with interesting but unintuitive combinations of consumed media associated with a given ideology or party affiliation. This idea is illustrated in the figure below. Inspected in isolation, the viewership of the politically conservative TV show *Hannity* clearly clusters in the ideologically conservative portion of the autoencoder space while *NCIS*, at face value an unpolitical entertainment format, is spread over its entire range.
 
-![Comparision of TV shows watched: Sean Hannity and NCIS.](ae_plots/compare_hannity_ncis.png)
+\begin{figure}
+\centering
+\includegraphics[width=.8\linewidth]{frog.eps}
+\caption{Comparision of TV shows watched: Sean Hannity and NCIS.}
+\end{figure}
 
-In response to relatively higher confidence values of the association rule *Hannity* + *NCIS* -\> *Ideology: conservative* compared to *Hannity* alone as an antecedent, we once more surveyed the autoencoder space, this time coloring the intersection of *Hannity* and *NCIS* viewers. As expected, a number of outliers that cannot be unambiguously associated with the conservative portion of the autoencoder space cease to be part of the selection. This, however, comes at the cost of reducing the number of observations present in our visualization.
+In response to relatively higher confidence values of the association rule *Hannity* + *NCIS* -> *Ideology: conservative* compared to *Hannity* alone as an antecedent, we once more surveyed the autoencoder space, this time coloring the intersection of *Hannity* and *NCIS* viewers. As expected, a number of outliers that cannot be unambiguously associated with the conservative portion of the autoencoder space cease to be part of the selection. This, however, comes at the cost of reducing the number of observations present in our visualization.
 
 In order to probe the utility of intersections of different media items based on our intuitions about combinations of partisan media, we examined *Sean Hannity* and shows commonly associated with conservative ideology. As expected, the intersection of *Hannity*, *The O-Reilly Factor* and *On the Record with Greta Van Susteren* clearly picks out a cluster of observations in the conservative range of our dimension-reduced dataspace.
 
 What is surprising, however, is the similarity between the combinations of three conservative shows and that of *Hannity* and a seemingly unpolitical entertainment format. Interestingly, the number of observations that fall into the intersection of the three political shows is visibly higher than that of *Hannity* and *NCIS*. It is plausible that the latter combination picks out a specific subset of conservative viewers. The nature of the distinction between the two groups other than a predilection for the crime genre, however, can only be surmised. A hypothetical ideological factor underlying this tendency could, for instance, be a positive attitude towards police authority.
 
-![Comparision of TV shows watched: Hannity and NCIS vs. Hannity, NCIS and OTR.](ae_plots/compare_plot.png)  
-
+\begin{figure}
+\centering
+\includegraphics[width=.8\linewidth]{frog.eps}
+\caption{Comparision of TV shows watched: Hannity and NCIS vs. Hannity, NCIS and OTR.}
+\end{figure}
 
 % Bibliography
 \bibliography{UML}
