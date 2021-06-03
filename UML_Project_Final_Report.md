@@ -33,7 +33,7 @@
 \keywords{American Politics $|$ Polarization $|$ Affect $|$ News $|$ Entertainment} 
 
 \begin{abstract}
-What role do news and entertainment sources play in the formation of political identity? Here we report the results of two non-linear dimensionality reduction techniques (LLE and AE) using the 2016 ANES time series (N=4,270) to uncover relational pathways between markers of political identity and choice of news sources and entertainment. <Summary LLE results>. <Summary AE results>. Whilst we do not advance a causal argument in regard to these relational pathways, we do set the groundwork for future research on the topic of affect and political identity.  
+What role do news and entertainment sources play in the formation of political identity? Here we report the results of two non-linear dimensionality reduction techniques (LLE and AE) using the 2016 ANES time series (N=4,270) to uncover relational pathways between markers of political identity and choice of news sources and entertainment. Using LLE, we find significant separation in the viewership of political media between the self-reported political ideologies of respondents. Further investigation using LLE showed little political separation in the viewership of strictly entertainment-based TV shows, though shows relying on specific political or cultural themes do tend to create some separation. Additional analyses using autoencoders supported the results obtained with LLE. We deployed association rule mining to guide our visual inspection of the dataspace. Combinations of entertainment and political media formats suggested by association rules yielded interesting subsets with respect to ideological leaning. Whilst we do not advance a causal argument in regard to these relational pathways, we do set the groundwork for future research on the topic of affect and political identity.  
 \end{abstract}
 
 \dates{This manuscript was compiled on \today}
@@ -180,7 +180,7 @@ Inspecting relative feature importance, we see that feelings towards certain pol
 
 \begin{figure}
 \centering
-\includegraphics[width=.8\linewidth]{frog.eps}
+\includegraphics[width=.8\linewidth]{ae_7 fimp_plot.png}
 \caption{Relative feature importance of feeling-thermometer data.}
 \end{figure}
 
@@ -188,7 +188,7 @@ Just as in the plots obtained in the LLE analysis, we can see similar degrees of
 
 \begin{figure}
 \centering
-\includegraphics[width=.8\linewidth]{frog.eps}
+\includegraphics[width=.8\linewidth]{ae_8 ideology_both_plot.png}
 \caption{Ideological separation in training and test set.}
 \end{figure}
 
@@ -198,7 +198,7 @@ In a next step, we conducted association rule mining on the media space to guide
 
 \begin{figure}
 \centering
-\includegraphics[width=.8\linewidth]{frog.eps}
+\includegraphics[width=.8\linewidth]{ae_9 conservative_rules.png}
 \caption{Association rules with conservative ideology as RHS.}
 \end{figure}
 
@@ -206,7 +206,7 @@ Interestingly, a search over moderate consequents yields less useful rules, indi
 
 \begin{figure}
 \centering
-\includegraphics[width=.8\linewidth]{frog.eps}
+\includegraphics[width=.8\linewidth]{ae_10 moderate_rules.png}
 \caption{Association rules with moderate ideology as RHS.}
 \end{figure}
 
@@ -214,7 +214,7 @@ In our analysis we used association rules mainly to provide us with interesting 
 
 \begin{figure}
 \centering
-\includegraphics[width=.8\linewidth]{frog.eps}
+\includegraphics[width=.8\linewidth]{ae_11 hannity_ncis_ae.png}
 \caption{Comparision of TV shows watched: Sean Hannity and NCIS.}
 \end{figure}
 
@@ -226,9 +226,17 @@ What is surprising, however, is the similarity between the combinations of three
 
 \begin{figure}
 \centering
-\includegraphics[width=.8\linewidth]{frog.eps}
+\includegraphics[width=.8\linewidth]{ae_12 compare_hannity_ncis.png}
 \caption{Comparision of TV shows watched: Hannity and NCIS vs. Hannity, NCIS and OTR.}
 \end{figure}
+
+\section{Conclusions}
+
+Our results support the assumption that politically-themed media tend to have distinct consumer groups based on political ideology. Extending this hypothesis to the entertainment space had mixed results. TV shows with very few political themes, such as \emph{The Big Bang Theory}, had no separation in the ideologies of its viewers. Thus, sources of pure entertainment have a buffer against the cognitive biases that result in the polarized landscape of political media. However, sources of entertainment that contain political elements or have heavy thematic elements based on other facets of self-identification, such as race, may result in distinct ideological audiences. Viewers of \emph{The Late Show with Stephen Colbert}, for example, skew liberal because he satirizes conservative media. Viewers of \emph{Empire} skew liberal, but do not overlap with the Colbert audience. This is likely because \emph{Empire} caters to an African-American audience.
+
+Subgroups of ANES respondents who reported consuming political as well as certain entertainment formats turned out to possess interesting ideological profiles. The intersection of Sean Hannity viewers and NCIS viewers, for example picked out almost exclusively ideological conservatives. These cross-domain combinations were comparable with respect to ideological composition to intersections of multiple purely political formats. What this means in substantive terms, however, is hard to determine without analyzing the respective media items in terms of content. The method we deployed in our study might nonetheless prove generative for subsequent research.
+
+As our results show, the relational pathways between ideology and sources of information and entertainment are very clear. Future research can expand on this by showing how these pathways change as a result of social or economic ideological preferences, race, age groups, or location, for example. Also, even though we have not advanced any causal arguments, our description of the entertainment and news landscape by the ideology lends itself to such arguments. One can imagine an experiment using some of the rules found in the AE section as a starting point for quantitative analysis on the amount of variation that can be explained. Finally, we maintained our observations at an aggregate level. But these relationships could also be mapped at an individual level. Researchers could benefit from our analysis when planning experiments on affect or hot cognition.
 
 % Bibliography
 \bibliography{UML}
